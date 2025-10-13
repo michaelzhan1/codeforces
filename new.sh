@@ -1,17 +1,13 @@
 #!/bin/sh
 
-# Extract number and letter
-num=$(echo "$1" | grep -o '^[0-9]\+')
-let=$(echo "$1" | grep -o '[a-zA-Z]$')
-
 # Pad number to 4 digits
-padded=$(printf "%04d%s" "$num" "$let")
+padded=$(printf "%04d" "$1")
 
-mkdir "$padded"
-touch "$padded/$padded.cpp"
-touch "$padded/$padded.txt"
+mkdir -p "$padded"
+touch "$padded/$padded$2.cpp"
+touch "$padded/$padded$2.txt"
 
-cat << EOF >> "$padded/$padded.cpp"
+cat << EOF >> "$padded/$padded$2.cpp"
 #include <iostream>
 #include <string>
 
