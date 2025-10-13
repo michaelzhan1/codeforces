@@ -7,8 +7,9 @@ let=$(echo "$1" | grep -o '[a-zA-Z]$')
 # Pad number to 4 digits
 padded=$(printf "%04d%s" "$num" "$let")
 
-touch "$padded.cpp"
-touch "$padded.txt"
+mkdir "$num"
+touch "$num/$padded.cpp"
+touch "$num/$padded.txt"
 
 cat << EOF >> "$padded.cpp"
 #include <iostream>
