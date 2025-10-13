@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall
+CXXFLAGS = -Wall -Wpedantic -Wextra -Werror -Wmissing-include-dirs
 
 # Pattern rule: target matches directory name
 # Use a FORCE phony dependency so the rule runs even if a directory with
