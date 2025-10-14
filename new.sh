@@ -7,6 +7,9 @@ mkdir -p "$padded"
 touch "$padded/$padded$2.cpp"
 touch "$padded/$padded$2.txt"
 
+if [ -f "$padded/$padded$2.cpp" ]; then
+    exit 0
+fi
 cat << EOF >> "$padded/$padded$2.cpp"
 #include <iostream>
 #include <string>
