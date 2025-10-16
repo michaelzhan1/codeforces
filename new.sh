@@ -1,17 +1,36 @@
 #!/bin/sh
 
-# Pad number to 4 digits
-padded=$(printf "%04d" "$1")
+# Check for required arguments
+if [ $# -lt 3 ]; then
+    echo "Usage: $0 <number> <suffix> <extension>"
+    exit 1
+fi
 
-if [ -f "$padded/$padded$2.cpp" ]; then
+num="$1"
+suffix="$2"
+ext="$3"
+
+# Pad number to 4 digits
+padded=$(printf "%04d" "$num")
+
+# File paths
+dir="$padded"
+base="$dir/$padded$suffix"
+src="$base.$ext"
+txt="$base.txt"
+
+# Exit if file already exists
+if [ -f "$src" ]; then
     exit 0
 fi
 
-mkdir -p "$padded"
-touch "$padded/$padded$2.cpp"
-touch "$padded/$padded$2.txt"
+# Create directory and files
+mkdir -p "$dir"
+touch "$txt"
 
-cat << EOF >> "$padded/$padded$2.cpp"
+case "$ext" in
+    cpp)
+        cat > "$src" << EOF
 #include <iostream>
 #include <string>
 
@@ -20,3 +39,17 @@ int main()
     return 0;
 }
 EOF
+        ;;
+    py)
+        cat > "$src" << EOF
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
+EOF
+        ;;
+    *)
+        touch "$src"
+        ;;
+esac
