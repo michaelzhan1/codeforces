@@ -33,6 +33,10 @@ case "$ext" in
         cat > "$src" << EOF
 #include <iostream>
 #include <string>
+#include <vector>
+
+using vi = std::vector<int>;
+using vvi = std::vector<vi>;
 
 int main()
 {
