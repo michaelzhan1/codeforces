@@ -1,14 +1,18 @@
 #!/bin/sh
 
-# ./run.sh {number} {letter}
+# Check for required arguments
+if [ $# -lt 3 ]; then
+    echo "Usage: $0 <number> <suffix> <extension>"
+    exit 1
+fi
 
 padded=$(printf "%04d" "$1")
 
-if [ -f "$padded/$padded$2.cpp" ]; then
+if [ "$3" = "cpp" ]; then
     g++ -Wall -Wpedantic -Wextra -Werror -Wmissing-include-dirs $padded/$padded$2.cpp
     ./a.out < $padded/$padded$2.txt
 fi
 
-if [ -f "$padded/$padded$2.py" ]; then
+if [ "$3" = "py" ]; then
     python3 $padded/$padded$2.py < $padded/$padded$2.txt
 fi
