@@ -9,7 +9,7 @@ fi
 padded=$(printf "%04d" "$1")
 
 if [ "$3" = "cpp" ]; then
-    g++ -Wall -Wpedantic -Wextra -Werror -Wmissing-include-dirs $padded/$padded$2.cpp
+    g++ -Wall -Wpedantic -Wextra -Werror -Wmissing-include-dirs -Wconversion -Wsign-conversion $padded/$padded$2.cpp
     ./a.out < $padded/$padded$2.txt
 fi
 

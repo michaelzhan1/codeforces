@@ -31,22 +31,43 @@ touch "$txt"
 case "$ext" in
     cpp)
         cat > "$src" << EOF
+#include <algorithm>
 #include <iostream>
 #include <string>
-#include <vector>
 #include <unordered_set>
 #include <unordered_map>
+#include <vector>
+
+// nums
+using ll = long long;
 
 // vectors
 using vi = std::vector<int>;
 using vvi = std::vector<vi>;
-using pi = std::pair<int, int>;
-using vpi = std::vector<pi>;
 
-// sets
-using usi = std::unordered_set<int>;
+// pairs
+template <typename T1, typename T2>
+inline std::pair<T1, T2> mp(T1 a, T2 b)
+{
+    return std::make_pair(a, b);
+}
 
-// problem-specific
+// pair hashing
+struct pair_hash
+{
+    template <class T1, class T2>
+    std::size_t operator()(const std::pair<T1, T2> &p) const
+    {
+        auto h1 = std::hash<T1>{}(p.first);
+        auto h2 = std::hash<T2>{}(p.second);
+
+        // Mainly for demonstration purposes, i.e. works but is overly simple
+        // In the real world, use sth. like boost.hash_combine
+        return h1 ^ h2;
+    }
+};
+
+// problem specific
 
 int main()
 {
