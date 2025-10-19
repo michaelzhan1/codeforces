@@ -34,9 +34,19 @@ case "$ext" in
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
 
+// vectors
 using vi = std::vector<int>;
 using vvi = std::vector<vi>;
+using pi = std::pair<int, int>;
+using vpi = std::vector<pi>;
+
+// sets
+using usi = std::unordered_set<int>;
+
+// problem-specific
 
 int main()
 {
