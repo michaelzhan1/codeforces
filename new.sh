@@ -33,9 +33,10 @@ case "$ext" in
         cat > "$src" << EOF
 #include <algorithm>
 #include <iostream>
+#include <numeric>
 #include <string>
-#include <unordered_set>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 // nums
@@ -44,6 +45,11 @@ using ll = long long;
 // vectors
 using vi = std::vector<int>;
 using vvi = std::vector<vi>;
+using vs = std::vector<size_t>;
+
+// sets
+using usi = std::unordered_set<int>;
+using uss = std::unordered_set<size_t>;
 
 // pairs
 template <typename T1, typename T2>
