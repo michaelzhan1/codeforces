@@ -1,21 +1,21 @@
 #!/bin/sh
 
 # Check for required arguments
-if [ $# -lt 3 ]; then
-    echo "Usage: $0 <number> <suffix> <extension>"
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <problem> <extension>"
     exit 1
 fi
 
-num="$1"
-suffix="$2"
-ext="$3"
+num=$(expr "$1" : '\([0-9][0-9]*\)[a-z][a-z]*$')
+letter=$(expr "$1" : '^[0-9][0-9]*\([a-z][a-z]*\)$')
+ext="$2"
 
 # Pad number to 4 digits
 padded=$(printf "%04d" "$num")
 
 # File paths
 dir="$padded"
-base="$dir/$padded$suffix"
+base="$dir/$padded$letter"
 src="$base.$ext"
 txt="$base.txt"
 
