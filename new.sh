@@ -32,8 +32,10 @@ case "$ext" in
     cpp)
         cat > "$src" << EOF
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <numeric>
+#include <queue>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
