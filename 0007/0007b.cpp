@@ -50,13 +50,13 @@ int main()
     size_t t, m;
     std::cin >> t >> m;
 
-    std::vector<pss> free{mp(0, m)};       // {start_i, width}
-    std::unordered_map<uint, pss> loc_map; // id -> {start_i, width}
-    uint id = 1;
+    std::vector<pss> free{mp(0, m)};      // {start_i, width}
+    std::unordered_map<int, pss> loc_map; // id -> {start_i, width}
+    int id = 1;
 
     std::string cmd;
     size_t alloc_arg;
-    uint erase_arg;
+    int erase_arg;
     bool found;
 
     for (size_t i = 0; i < t; i++)
@@ -105,57 +105,58 @@ int main()
             if (loc_map.find(erase_arg) == loc_map.end())
             {
                 std::cout << "ILLEGAL_ERASE_ARGUMENT" << std::endl;
-                continue;
             }
-
-            // find and pop range
-            pss block = loc_map[erase_arg];
-            auto it = std::lower_bound(free.begin(), free.end(), block);
-            std::cout << it->first << ' ' << it->second << std::endl;
-            it = free.insert(it, block); // bring to inserted block
-            loc_map.erase(erase_arg);
-
-            // if not at the end, try to merge right
-            if (std::next(it) != free.end())
+            else
             {
-                const auto &next = std::next(it);
-                if (it->first + it->second == next->first)
+
+                // find and pop range
+                pss block = loc_map[erase_arg];
+                auto it = std::lower_bound(free.begin(), free.end(), block);
+                it = free.insert(it, block); // bring to inserted block
+                loc_map.erase(erase_arg);
+
+                // if not at the end, try to merge right
+                if (std::next(it) != free.end())
                 {
-                    it->second += next->second;
-                    free.erase(next);
+                    const auto &next = std::next(it);
+                    if (it->first + it->second == next->first)
+                    {
+                        it->second += next->second;
+                        free.erase(next);
+                    }
                 }
-            }
 
-            // if not at beginning, try to merge left
-            if (it != free.begin())
-            {
-                const auto &prev = std::prev(it);
-                if (prev->first + prev->second == it->first)
+                // if not at beginning, try to merge left
+                if (it != free.begin())
                 {
-                    prev->second += it->second;
-                    free.erase(it);
+                    const auto &prev = std::prev(it);
+                    if (prev->first + prev->second == it->first)
+                    {
+                        prev->second += it->second;
+                        free.erase(it);
+                    }
                 }
             }
         }
         else
         {
-        }
+            // sort used ranges to get relative order
+            std::vector<std::unordered_map<int, pss>::iterator> used;
+            for (auto it = loc_map.begin(); it != loc_map.end(); it++)
+                used.push_back(it);
+            std::sort(used.begin(), used.end(), [](auto a, auto b)
+                      { return a->second < b->second; });
 
-        std::cout << cmd << '\n'
-                  << std::endl;
-        std::cout << "free" << std::endl;
-        for (auto p : free)
-        {
-            std::cout << p.first << ' ' << p.second << std::endl;
-        }
+            size_t i = 0;
+            for (auto it : used)
+            {
+                it->second.first = i;
+                i += it->second.second;
+            }
 
-        std::cout << '\n'
-                  << "used" << std::endl;
-        for (auto it : loc_map)
-        {
-            std::cout << it.first << " (" << it.second.first << ' ' << it.second.second << ')' << std::endl;
+            free.clear();
+            free.push_back(mp(i, m - i));
         }
-        std::cout << "=============" << std::endl;
     }
 
     return 0;
