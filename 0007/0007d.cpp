@@ -42,59 +42,37 @@ struct pair_hash
     }
 };
 
-// problem specific
-std::vector<size_t> manacher(std::string orig) {
-    std::string s = "#";
-    for (size_t i = 0; i < orig.size(); i++)
-    {
-        s += orig[i];
-        s += '#';
-    }
-
-    size_t n = s.size();
-    std::vector<size_t> dp(n, 0); // radii
-    size_t c = 0; // current umbrella palindrome center
-    size_t r = 0; // right boundary of current umbrella center
-    
-    for (size_t i = 0; i < n; i++)
-    {
-        // mirror = center - (i - center)
-        size_t m = 2 * c - i;
-
-        // if mirrored palindrome is entirely contained, take dp result and short circuit
-        if (i + dp[m] < r)
-        {
-            dp[i] = dp[m];
-            continue;
-        }
-
-        // if current palindrome at i is still within the umbrella, then it must be pushing the boundary
-        // based on an invariant below, i will never be more than right, only at most equal.
-        if (i < r)
-            dp[i] = r - i;
-        
-        // expand the palindrome about i. this happens when the palindrome around i exceeds the right boundary
-        // so basically, we are building a new umbrella
-        while (i - dp[i] > 0 && i + dp[i] < n - 1 && s[i - dp[i] - 1] == s[i + dp[i] + 1])
-            dp[i]++;
-        
-        // if we did expand past right, then this is our new umbrella
-        if (i + dp[i] > r)
-        {
-            c = i;
-            r = i + dp[i];
-        }
-    }
-    return dp;
-}
-
+// https://ksmeow.moe/pd-cf7d-sol/
 int main()
 {
     std::string s;
     std::cin >> s;
 
-    std::vector<size_t> radii = manacher(s);
+    const ll mod = 1'000'000'007; // 10**9 + 7
+    const ll base = 91138233;
+
+    ll h = 0;
+    ll rh = 0;
+    ll pow = 1;
+
+    std::unordered_map<size_t, ll> freq;
+    ll res = 0;
+
+    for (size_t i = 0; i < s.size(); i++)
+    {
+        char ch = s[i];
+        h = (h * base + ch) % mod;
+        rh = (rh + ch * pow) % mod;
+        if (h == rh)
+        {
+            freq[i] = 1 + freq[(i - 1) / 2];
+            res += freq[i];
+        }
+        pow = (pow * base) % mod;
+    }
+
+    std::cout << res << std::endl;
     
-    // need to then take manacher output and compile res
+
     return 0;
 }
