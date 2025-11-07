@@ -42,37 +42,52 @@ struct pair_hash
     }
 };
 
-// https://ksmeow.moe/pd-cf7d-sol/
+const ll MOD = 998244353;
+const ll BASE = 233;
+
+const int MAX_N = 5000005;
+int dp[MAX_N];
+
+ll pows[MAX_N];
+ll fwd_hsh[MAX_N];
+ll rev_hsh[MAX_N];
+
+inline ll hash(ll hsh[], size_t l, size_t r)
+{
+    return (hsh[r] - hsh[l - 1] * pows[r - l + 1] % MOD + MOD) % MOD;
+}
+
 int main()
 {
     std::string s;
     std::cin >> s;
 
-    const ll mod = 1'000'000'007; // 10**9 + 7
-    const ll base = 91138233;
+    std::string rev_s = s;
+    std::reverse(rev_s.begin(), rev_s.end());
 
-    ll h = 0;
-    ll rh = 0;
-    ll pow = 1;
+    size_t n = s.size();
 
-    std::unordered_map<size_t, ll> freq;
-    ll res = 0;
+    pows[0] = 1;
+    fwd_hsh[0] = 0;
+    rev_hsh[0] = 0;
 
-    for (size_t i = 0; i < s.size(); i++)
+    for (size_t i = 1; i < n + 1; i++)
+        pows[i] = pows[i - 1] * BASE % MOD;
+    for (size_t i = 1; i < n + 1; i++)
+        fwd_hsh[i] = (fwd_hsh[i - 1] * BASE % MOD + s[i - 1]) % MOD;
+    for (size_t i = 1; i < n + 1; i++)
+        rev_hsh[i] = (rev_hsh[i - 1] * BASE % MOD + rev_s[i - 1]) % MOD;
+
+    dp[1] = 1;
+    ll res = 1;
+    for (size_t i = 2; i < n + 1; i++)
     {
-        char ch = s[i];
-        h = (h * base + ch) % mod;
-        rh = (rh + ch * pow) % mod;
-        if (h == rh)
-        {
-            freq[i] = 1 + freq[(i - 1) / 2];
-            res += freq[i];
-        }
-        pow = (pow * base) % mod;
+        if (hash(fwd_hsh, 1, i / 2) == hash(rev_hsh, n - i + 1, n - i + i / 2))
+            dp[i] = dp[i / 2] + 1;
+        res += dp[i];
     }
 
     std::cout << res << std::endl;
-    
 
     return 0;
 }
