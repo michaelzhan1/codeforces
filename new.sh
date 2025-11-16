@@ -51,6 +51,12 @@ EOF
         ;;
     py)
         cat > "$src" << EOF
+def read(to_type):
+    return to_type(input())
+
+def read_arr(to_type):
+    return list(map(to_type, input().strip().split()))
+
 def main():
     pass
 
