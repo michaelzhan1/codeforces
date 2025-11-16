@@ -1,4 +1,4 @@
-from functools import cache
+# from functools import cache
 
 def main():
     t = int(input())
@@ -6,53 +6,46 @@ def main():
         [n, k] = map(int, input().strip().split())
 
         graph = {}
+        subtrees = {}
         for i in range(1, n + 1):
             graph[i] = []
+            subtrees[i] = 1
         
         for _ in range(n - 1):
             [a, b] = map(int, input().strip().split())
             graph[a].append(b)
             graph[b].append(a)
-    
-        dp = {}
-        output = 0
-        for root in range(1, n + 1):
-            # cur, prev, visited
-            stack = [(root, None, False)]
 
-            while stack:
-                cur, prev, visited = stack.pop()
-
-                if len(graph[cur]) == 1 and prev is not None:
-                    dp[(cur, prev)] = (int(k <= 1), 1)
-                    continue
-
-                if not visited:
-                    # add to revisit
-                    stack.append((cur, prev, True))
-
-                    # add children
-                    for neigh in graph[cur]:
-                        if neigh != prev and (neigh, cur) not in dp:
-                            stack.append((neigh, cur, False))
-                else: 
-                    res = 0
-                    node_count = 1
-
-                    # already computed
-                    for neigh in graph[cur]:
-                        if neigh != prev:
-                            child_res, child_count = dp[(neigh, cur)]
-                            res += child_res
-                            node_count += child_count
-                    
-                    if node_count >= k:
-                        res += 1
-                    dp[(cur, prev)] = (res, node_count)
-            
-            output += dp[(root, None)][0]
+        stack = [(1, None, False)]
+        while stack:
+            cur, prev, done = stack.pop()
+            if not done:
+                stack.append((cur, prev, True))
+                for neigh in graph[cur]:
+                    if neigh != prev:
+                        stack.append((neigh, cur, False))
+            else:
+                for neigh in graph[cur]:
+                    if neigh != prev:
+                        subtrees[cur] += subtrees[neigh]
         
-        print(output)
+        res = 0
+
+        # for each node, it can be split as:
+        #   1. number of nodes in its subtree (subtrees[i])
+        #   2. number of nodes not in its subtree (n - subtrees[i])
+        #
+        # if subtrees[i] >= k, then all _roots_ in the n - subtrees[i] nodes would be countable
+        # if (n - subtrees[i]) >= k, then all _roots_ in the subrees[i] nodes would be countable
+        for i in range(1, n + 1):
+            if subtrees[i] >= k:
+                res += n - subtrees[i]
+            if n - subtrees[i] >= k:
+                res += subtrees[i]
+        
+        # the above doesn't account for the case of selecting i iself as the root of the entire tree,
+        # so add n to compensate
+        print(res + n)
 
 
 if __name__ == "__main__":
